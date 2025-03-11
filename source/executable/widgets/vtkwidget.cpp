@@ -95,7 +95,7 @@ void VtkWidget::initUi()
     vtk_widget_ = new QVTKOpenGLNativeWidget(this);
     vtk_widget_->setRenderWindow(render_window_);
 
-    renderer_->SetBackground(0.2, 0.3, 0.4);
+    renderer_->SetBackground(1.0, 1.0, 1.0);
 
     // 设置2D视角
     vtkCamera *camera = renderer_->GetActiveCamera();
@@ -138,6 +138,14 @@ void VtkWidget::switchInteractorStyle()
         style->SetDefaultRenderer(renderer_);
         interactor->SetInteractorStyle(style);
         current_style_ = InteractorStyle::PickPoint;
+
+        // 确保点actor是可见的
+        if (all_points_actor_)
+        {
+            all_points_actor_->SetVisibility(true);
+            render_window_->Render();
+        }
+
         Logging::info("Switched to PickPoint style.");
     }
     else
@@ -330,6 +338,10 @@ void VtkWidget::loadInpFile(const QString &filename, const FileType &type)
             all_points_actor_->SetPosition(0, 0, 0.01);
             renderer_->AddActor(all_points_actor_);
             Logging::info("Points actor added to renderer");
+            Logging::info("Points actor position: {}, {}, {}",
+                          all_points_actor_->GetPosition()[0],
+                          all_points_actor_->GetPosition()[1],
+                          all_points_actor_->GetPosition()[2]);
         }
 
         // 输出点和单元的数量
@@ -382,6 +394,8 @@ void VtkWidget::onCellSelected(size_t cellId, int x, int y)
                                    .arg(point[1])
                                    .arg(point[2]));
         }
+        auto cell_property = project_model_->getCellProperty(cellId + 1);
+        tooltipText.append(QString("Cell Property: %1\n").arg(cell_property.toString()));
 
         ui_.tooltip_widget->setText(tooltipText);
         ui_.tooltip_widget->adjustSize();
@@ -399,6 +413,10 @@ void VtkWidget::onPointSelected(size_t pointId, int x, int y)
         auto point = grid_->GetPoint(pointId);
         QString tooltipText = QString("Point ID: %1\n").arg(pointId + 1);
         tooltipText.append(QString("Point: %1, %2, %3\n").arg(point[0]).arg(point[1]).arg(point[2]));
+
+        auto boundary_condition = project_model_->getBoundaryCondition(pointId + 1);
+        tooltipText.append(QString("Boundary Condition: %1\n").arg(boundary_condition.toString()));
+
         ui_.tooltip_widget->setText(tooltipText);
         ui_.tooltip_widget->adjustSize();
         ui_.tooltip_widget->setGeometry(QRect(QCursor::pos(), ui_.tooltip_widget->size()));

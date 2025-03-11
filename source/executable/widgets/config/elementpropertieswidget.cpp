@@ -213,9 +213,9 @@ void ElementPropertiesWidget::addNewElement()
 
     // 颜色
     auto color_item = new QTableWidgetItem();
-    color_item->setData(Qt::BackgroundRole, QColor(Qt::white));
+    color_item->setData(Qt::BackgroundRole, QColor(255 * 0.5, 255 * 0.5, 255 * 0.5));
     ui_.properties_table->setItem(9, col, color_item);
-    newProperty.color = QColor(Qt::white);
+    newProperty.color = QColor(255 * 0.5, 255 * 0.5, 255 * 0.5);
 
     // 添加到模型
     project_model_->addElementProperty(newProperty);

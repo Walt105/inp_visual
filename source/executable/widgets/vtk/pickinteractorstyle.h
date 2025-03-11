@@ -14,6 +14,7 @@ public:
     vtkTypeMacro(CellPickInteractorStyle, vtkInteractorStyleRubberBand2D);
 
     virtual void OnLeftButtonDown() override;
+    virtual void OnLeftButtonUp() override;
 
     vtkSmartPointer<vtkEventQtSlotConnect> Connections;
     void setEmitter(SignalEmitter *emitter);
@@ -30,6 +31,8 @@ public:
     vtkTypeMacro(PointPickInteractorStyle, vtkInteractorStyleRubberBand2D);
 
     virtual void OnLeftButtonDown() override;
+    virtual void OnLeftButtonUp() override;
+
     void setEmitter(SignalEmitter *emitter);
 
 private:

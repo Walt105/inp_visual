@@ -76,7 +76,6 @@ struct ElementProperty
 struct BoundaryCondition
 {
     QString id{"boundary"};         // 边界ID
-    int node_attribute{1};          // 节点属性
     int x_direction_type{3};        // X方向边界条件类型
     double x_direction_size{0.0};   // X方向边界条件大小
     int y_direction_type{3};        // Y方向边界条件类型
@@ -84,6 +83,19 @@ struct BoundaryCondition
     double unit_surface_force{0.0}; // 单元面力
     double unit_shear_force{0.0};   // 单元剪引力
     QColor color{Qt::yellow};       // 颜色
+
+    QString toString() const
+    {
+        return QString("ID: %1, Node Attribute: %2, X Direction Type: %3, X Direction Size: %4, Y Direction Type: %5, "
+                       "Y Direction Size: %6, Unit Surface Force: %7, Unit Shear Force: %8")
+            .arg(id)
+            .arg(x_direction_type)
+            .arg(x_direction_size)
+            .arg(y_direction_type)
+            .arg(y_direction_size)
+            .arg(unit_surface_force)
+            .arg(unit_shear_force);
+    }
 };
 
 class ProjectModel : public QObject
